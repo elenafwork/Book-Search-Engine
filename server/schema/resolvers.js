@@ -9,7 +9,7 @@ const resolvers = {
     // By adding context to our query, we can retrieve the logged in user without specifically searching for them
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate('books');
+        return User.findOne({ _id: context.user._id });
       }
       throw new AuthenticationError('You need to be logged in!');
     },
@@ -45,7 +45,7 @@ const resolvers = {
         return User.findOneAndUpdate(
           { _id:context.user._id},
           {
-            $addToSet: { books: BookData }, //???not sure, may be book
+            $addToSet: { savedBooks: book }, //???not sure, may be book
           },
           {
             new: true,
@@ -63,7 +63,7 @@ const resolvers = {
       if (context.user) {
         return User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: {books: bookId } },
+          { $pull: {savedBooks: {bookId} } },
           { new: true }
         );
       }
